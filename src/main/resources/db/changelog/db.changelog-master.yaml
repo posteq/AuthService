@@ -1,0 +1,6 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table
+      author: posteq
+  - include:
+      file: db/changelog/changeset/001-create-credentials.sql
