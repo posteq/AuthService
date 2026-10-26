@@ -3,7 +3,7 @@ plugins {
     id 'jacoco'
     id 'org.springframework.boot' version '4.1.1'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.sonarqube' version '7.2.3.7755'
+    id "org.sonarqube" version "7.5.0.8588"
 }
 
 group = 'com.innowise.academy'
@@ -84,8 +84,8 @@ jacocoTestCoverageVerification {
 
 sonar {
     properties {
-        property 'sonar.organization', 'posteq'
-        property 'sonar.projectKey', 'posteq_AuthService'
+        property "sonar.projectKey", "posteq_AuthService"
+        property "sonar.organization", "posteq"
         property 'sonar.host.url', 'https://sonarcloud.io'
         property 'sonar.coverage.jacoco.xmlReportPaths', 'build/reports/jacoco/test/jacocoTestReport.xml'
         property 'sonar.coverage.exclusions', '**/dto/**,**/entity/**,**/*MapperImpl*,**/config/**'
