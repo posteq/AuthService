@@ -30,7 +30,7 @@ public class CredentialEntity extends BaseEntity {
     @Column(name = "password",nullable = false)
     private String passwordHash;
     @Enumerated(EnumType.STRING)
-    @Column(name = "role")
+    @Column(name = "role",nullable = false)
     private Role role = Role.USER;
 
 }

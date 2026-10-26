@@ -17,7 +17,7 @@ import org.springframework.web.client.RestClientResponseException;
 public class UserServiceClient {
     private final RestClient restClient;
 
-    public UserProfileResponse createProfile(UserProfileRequest request){
+    public Long createUser(UserProfileRequest request){
         UserProfileResponse response ;
         try {
             response = restClient.post()
@@ -30,21 +30,22 @@ public class UserServiceClient {
                 throw new UserProfileConflictException("User profile already exists");
             }
             throw new UserServiceException("User Service is unavailable");
+        }catch (RestClientException e) {
+            throw new UserServiceException("User Service is unavailable");
         }
         if (response == null || response.id() == null){
             throw new UserServiceException("User Service returned no user id");
         }
-        return response;
+        return response.id();
     }
 
-    public void deleteProfile(Long userId){
+    public void deleteUser(Long userId){
         try {
             restClient.delete()
                     .uri("/api/users/{userId}",userId)
                     .retrieve()
                     .toBodilessEntity();
         }catch (RestClientException e){
-
             throw new UserServiceException("Failed to delete user profile " + userId);
         }
     }

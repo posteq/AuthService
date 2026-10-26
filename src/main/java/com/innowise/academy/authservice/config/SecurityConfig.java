@@ -28,7 +28,7 @@ public class SecurityConfig {
                                 "/.well-known/jwks.json",
                                 "/error")
                         .permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().denyAll())
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                         .accessDeniedHandler((request, response, ex) ->

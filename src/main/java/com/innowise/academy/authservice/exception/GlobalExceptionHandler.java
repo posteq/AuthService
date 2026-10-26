@@ -4,16 +4,18 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static org.springframework.http.HttpStatus.BAD_GATEWAY;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @RestControllerAdvice
@@ -43,10 +45,14 @@ public class GlobalExceptionHandler {
                 .body(new ErrorMessage(FORBIDDEN,"Access denied"));
     }
 
-    @ExceptionHandler({UsernameAlreadyExistsException.class, DataIntegrityViolationException.class})
-    public ResponseEntity<ErrorMessage> handleConflict(UsernameAlreadyExistsException ex) {
-        return ResponseEntity.status(CONFLICT)
-                .body(new ErrorMessage(CONFLICT,ex.getMessage()));
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public ResponseEntity<ErrorMessage> handleUsernameTaken(UsernameAlreadyExistsException ex) {
+        return ResponseEntity.status(CONFLICT).body(new ErrorMessage(CONFLICT, ex.getMessage()));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorMessage> handleDataIntegrity() {
+        return ResponseEntity.status(CONFLICT).body(new ErrorMessage(CONFLICT, "Account already exists"));
     }
 
     @ExceptionHandler(UserServiceException.class)
@@ -55,17 +61,22 @@ public class GlobalExceptionHandler {
                 .body(new ErrorMessage(BAD_GATEWAY,ex.getMessage()));
     }
 
-    @ExceptionHandler(UserServiceException.class)
+    @ExceptionHandler(UserProfileConflictException.class)
     public ResponseEntity<ErrorMessage> handleUserProfileConflictFailure(UserProfileConflictException ex) {
-        return ResponseEntity.status(NOT_FOUND)
-                .body(new ErrorMessage(NOT_FOUND,ex.getMessage()));
+        return ResponseEntity.status(CONFLICT)
+                .body(new ErrorMessage(CONFLICT,ex.getMessage()));
     }
 
+    @ExceptionHandler({MethodArgumentNotValidException.class,IllegalArgumentException.class, HttpMessageNotReadableException.class})
+    public ResponseEntity<ErrorMessage> handleNotValid(Exception e){
+        return ResponseEntity.status(BAD_REQUEST)
+                .body(new ErrorMessage(BAD_REQUEST,e.getMessage()));
+    }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessage> handleUnexpected(Exception ex) {
+    public ResponseEntity<ErrorMessage> handleUnexpected(Exception e) {
         return ResponseEntity.status(INTERNAL_SERVER_ERROR)
-                .body(new ErrorMessage(INTERNAL_SERVER_ERROR,ex.getMessage()));
+                .body(new ErrorMessage(INTERNAL_SERVER_ERROR,e.getMessage()));
     }
 
 }

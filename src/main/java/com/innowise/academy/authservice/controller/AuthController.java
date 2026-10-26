@@ -1,8 +1,10 @@
 package com.innowise.academy.authservice.controller;
 
 import com.innowise.academy.authservice.dto.request.LoginRequest;
+import com.innowise.academy.authservice.dto.request.RefreshRequest;
 import com.innowise.academy.authservice.dto.request.RegisterRequest;
-import com.innowise.academy.authservice.dto.response.RegisterResponse;
+import com.innowise.academy.authservice.dto.response.CredentialResponse;
+import com.innowise.academy.authservice.dto.response.TokenResponse;
 import com.innowise.academy.authservice.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

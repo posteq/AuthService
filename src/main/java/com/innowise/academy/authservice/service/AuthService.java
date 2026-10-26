@@ -2,13 +2,11 @@ package com.innowise.academy.authservice.service;
 
 import com.innowise.academy.authservice.client.UserServiceClient;
 import com.innowise.academy.authservice.dto.client.request.UserProfileRequest;
-import com.innowise.academy.authservice.dto.client.response.UserProfileResponse;
 import com.innowise.academy.authservice.dto.request.LoginRequest;
 import com.innowise.academy.authservice.dto.request.RefreshRequest;
 import com.innowise.academy.authservice.dto.request.RegisterRequest;
 import com.innowise.academy.authservice.dto.response.CredentialResponse;
 import com.innowise.academy.authservice.dto.response.TokenResponse;
-import com.innowise.academy.authservice.exception.RegistrationFailedException;
 import com.innowise.academy.authservice.exception.UsernameAlreadyExistsException;
 import com.innowise.academy.authservice.security.service.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -26,17 +24,17 @@ public class AuthService {
             throw new UsernameAlreadyExistsException(request.username());
         }
 
-        UserProfileResponse profile = userClient.createProfile(UserProfileRequest.from(request));
+        Long userCreatedId = userClient.createUser(UserProfileRequest.from(request));
 
         try {
-            return credentialService.create(request, profile.id());
+            return credentialService.create(request, userCreatedId);
         }catch(RuntimeException e){
             try {
-                userClient.deleteProfile(profile.id());
+                userClient.deleteUser(userCreatedId);
             } catch (RuntimeException additionalError) {
                 e.addSuppressed(additionalError);
             }
-            throw new RegistrationFailedException(e.getMessage());
+            throw e;
         }
     }
 

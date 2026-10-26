@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5555/authdb}
+    url: ${DB_URL:jdbc:postgresql://localhost:5555/postgres}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:demo}
   jpa:
@@ -9,3 +9,6 @@ spring:
       hibernate:
         format_sql: true
         use_sql_comments: true
+app:
+  user-service:
+    url: ${USER_SERVICE_URL:http://localhost:8081}
