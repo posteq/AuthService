@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: AuthService
+  profiles:
+    default: local
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    enabled: true
+server:
+  port: 8082
+app:
+  security:
+    jwt:
+      access-token-ttl: ${JWT_ACCESS_TTL:15m}
+      refresh-token-ttl: ${JWT_REFRESH_TTL:7d}
